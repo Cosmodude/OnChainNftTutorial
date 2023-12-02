@@ -3,26 +3,18 @@ import { NftCollection } from '../wrappers/NftCollection';
 import { compile, NetworkProvider } from '@ton-community/blueprint';
 import { buildCollectionContentCell, setItemContentCell } from './collectionContent/onChain';
 
-let myAddress: Address = Address.parse("kQAXUIBw-EDVtnCxd65Z2M21KTDr07RoBL6BYf-TBCd6dTBu");
-
 const randomSeed= Math.floor(Math.random() * 10000);
 
-const nextonAddress = Address.parse("EQBDqObEyc8KYOuHCKm0evBNp0hJ9derp8eSIdhYMjIeMRSZ");
-
+// Deploys collection and mints one item to the address of the 
 export async function run(provider: NetworkProvider) {
     const nftCollection = provider.open(NftCollection.createFromConfig({
-        ownerAddress: myAddress, 
+        ownerAddress: provider.sender().address!!, 
         nextItemIndex: 0,
         collectionContent: buildCollectionContentCell({
-            name: "NexTon Liquid Derivatives Staking",
-            description: "Collection of liquidity staking derivatives, issued by NexTon",
+            name: "OnChain collection",
+            description: "Collection of items with onChain metadata",
             image: "https://raw.githubusercontent.com/Cosmodude/Nexton/main/Nexton_Logo.jpg"
         }),
-        //off chain
-        // collectionContent: buildCollectionContentCell({
-        //     collectionContent: "https://raw.githubusercontent.com/Cosmodude/Nexton/main/collectionMetadata.json",
-        //     commonContent: " "
-        // }),
         nftItemCode: await compile("NftItem"),
         royaltyParams: {
             royaltyFactor: Math.floor(Math.random() * 500), 
@@ -41,7 +33,7 @@ export async function run(provider: NetworkProvider) {
         queryId: randomSeed,
         amount: 14000000n,
         itemIndex: 0,
-        itemOwnerAddress: myAddress,
+        itemOwnerAddress: provider.sender().address!!,
         itemContent: setItemContentCell({
             name: "OnChain",
             description: "Holds onchain metadata",
