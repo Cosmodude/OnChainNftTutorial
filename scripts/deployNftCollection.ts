@@ -31,13 +31,13 @@ export async function run(provider: NetworkProvider) {
     const mint = await nftCollection.sendMintNft(provider.sender(),{
         value: toNano("0.04"),
         queryId: randomSeed,
-        amount: 14000000n,
+        amount: toNano("0.014"),
         itemIndex: 0,
         itemOwnerAddress: provider.sender().address!!,
         itemContent: setItemContentCell({
             name: "OnChain",
             description: "Holds onchain metadata",
-            image: "",
+            image: "https://raw.githubusercontent.com/Cosmodude/Nexton/main/Nexton_Logo.jpg",
         })
     })
     console.log(`NFT Item deployed at https://testnet.tonviewer.com/${nftCollection.address}`);
