@@ -1,6 +1,6 @@
-import { Address, toNano } from 'ton-core';
+import { Address, toNano } from '@ton/core';
 import { NftCollection } from '../wrappers/NftCollection';
-import { NetworkProvider } from '@ton-community/blueprint';
+import { NetworkProvider } from '@ton/blueprint';
 import { setItemContentCell } from './nftContent/onChain';
 
 const randomSeed= Math.floor(Math.random() * 10000);
