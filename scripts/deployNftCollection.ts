@@ -2,6 +2,8 @@ import { Address, toNano } from '@ton/core';
 import { NftCollection } from '../wrappers/NftCollection';
 import { compile, NetworkProvider } from '@ton/blueprint';
 import { buildCollectionContentCell, setItemContentCell } from './nftContent/onChain';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const randomSeed= Math.floor(Math.random() * 10000);
 
@@ -11,21 +13,20 @@ export async function run(provider: NetworkProvider) {
         ownerAddress: provider.sender().address!!, 
         nextItemIndex: 0,
         collectionContent: buildCollectionContentCell({
-            name: "OnChain collection",
-            description: "Collection of items with onChain metadata",
-            image: "https://raw.githubusercontent.com/Cosmodude/Nexton/main/Nexton_Logo.jpg"
+            name: process.env.COLLECTION_NAME!,
+            description: process.env.COLLECTION_DESCRIPTION!,
+            image: process.env.COLLECTION_IMAGE!
         }),
         nftItemCode: await compile("NftItem"),
         royaltyParams: {
-            royaltyFactor: Math.floor(Math.random() * 500), 
-            royaltyBase: 1000,
+            royaltyFactor: parseInt(process.env.COLLECTION_ROYALTY_PERCENT!), 
+            royaltyBase: 100,
             royaltyAddress: provider.sender().address as Address
         }
     }, await compile('NftCollection')));
 
     console.log(provider.sender().address as Address)
     await nftCollection.sendDeploy(provider.sender(), toNano('0.05'));
-    console.log()
     await provider.waitForDeploy(nftCollection.address);
 
     const mint = await nftCollection.sendMintNft(provider.sender(),{

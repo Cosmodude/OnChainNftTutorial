@@ -105,7 +105,7 @@ export class NftCollection implements Contract {
                 .endCell()
             })
     }
-
+    // GETTERS
     async getCollectionData(provider: ContractProvider): Promise<{
         nextItemId: bigint, 
         ownerAddress: Address, 
@@ -130,4 +130,16 @@ export class NftCollection implements Contract {
         return itemAddress;
     }
 
+    async getRoyaltyParams(provider: ContractProvider) {
+        const royaltyParams = await provider.get("royalty_params", []);
+        const stack = royaltyParams.stack;
+        let numerator: bigint = stack.readBigNumber();
+        let denominator: bigint = stack.readBigNumber();
+        let destination: Address = stack.readAddress();
+        return {
+            royaltyFactor: numerator,
+            royaltyBase: denominator,
+            royaltyAddress: destination,
+        }
+    }
 }
